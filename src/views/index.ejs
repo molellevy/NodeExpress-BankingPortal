@@ -5,5 +5,12 @@
 <a href='/profile'>Profile</a>
 <br >
 <a href='/transfer'>Transfer</a>
+
 </div>
+<%- include('summary.ejs',{ account: accounts.credit }) %>
+
+<%- include('summary.ejs',{ account: accounts.checking }) %>
+
+<%- include('summary.ejs',{ account: accounts.savings })  %>
+
 <%- include('footer.ejs') %>
