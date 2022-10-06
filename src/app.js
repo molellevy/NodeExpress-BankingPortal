@@ -23,18 +23,18 @@ app.get('/', (req, res) => {
     res.render('index',{title:'Account summary',accounts:accounts});
 })
 app.get('/savings', (req,res)=>{
-    res.render('account.ejs',{account: accounts.savings})
+    res.render('account',{account: accounts.savings})
 })
 
 app.get('/checking', (req,res)=>{
-    res.render('account.ejs',{account: accounts.checking})
+    res.render('account',{account: accounts.checking})
 })
 
 app.get('/credit', (req,res)=>{
-    res.render('accounts.ejs',{account: accounts.credit})
+    res.render('accounts',{account: accounts.credit})
 })
 app.get('/profile', (req,res)=>{
-    res.render('profile.ejs',{user: users[0]})
+    res.render('profile',{user: users[0]})
 })
 
 app.listen(3000, () => {
