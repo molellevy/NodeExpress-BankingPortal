@@ -12,6 +12,7 @@ app.set('views', path.join(__dirname, '/views'));
 app.set('view engine','ejs');
 
 app.use('/', express.static(path.join(__dirname, 'public/')));
+app.use(express.urlencoded({extended:tru}))
 
 const accountData = fs.readFileSync('./src/json/accounts.json',{encoding:'UTF8'})
 
@@ -34,6 +35,22 @@ app.get('/credit', (req,res)=>{
 })
 app.get('/profile', (req,res)=>{
     res.render('profile',{user: users[0]})
+})
+
+app.get('/transfer', (req, res) => {
+    res.render('transfer');
+})
+
+app.post('/transfer', (req, res) => {
+    const newBalance = ()=>{
+        accounts[req.to].balance = parseInt( accounts[req.to].balance +  accounts[req.from])
+        accounts[req.from].balance = parseInt( accounts[req.from].balance -  accounts[req.from])
+        const accountsJSON = JSON.stringify(accounts)
+        fs.copySync(path.resolve(__dirname, './src/json/accounts.json'), 'account_backup.json');
+        fs.writeFileSync(path.resolve(__dirname, './src/json/accounts.json'),accountsJSON,{encoding:'utf8',flag:'w'})
+
+    }
+  res.render('transfer',{message: "Transfer Completed"});
 })
 
 app.listen(3000, () => {
