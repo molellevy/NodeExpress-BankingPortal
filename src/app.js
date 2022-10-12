@@ -42,14 +42,17 @@ app.get('/transfer', (req, res) => {
 })
 
 app.post('/transfer', (req, res) => {
-    const newBalance = ()=>{
-        accounts[req.to].balance = parseInt( accounts[req.to].balance +  accounts[req.from])
-        accounts[req.from].balance = parseInt( accounts[req.from].balance -  accounts[req.from])
-        const accountsJSON = JSON.stringify(accounts)
-        fs.copySync(path.resolve(__dirname, './src/json/accounts.json'), 'account_backup.json');
-        fs.writeFileSync(path.resolve(__dirname, './src/json/accounts.json'),accountsJSON,{encoding:'utf8',flag:'w'})
+   
 
-    }
+    
+        accounts[req.body.to].balance = parseInt(accounts[req.body.to].balance + req.body.amount)
+        accounts[req.body.from].balance = parseInt(accounts[req.body.from].balance - req.body.amount)
+       
+        const accountsJSON = JSON.stringify(accounts)
+        fs.copyFileSync(path.join(__dirname, 'json/accounts.json'), 'account_backup.json');
+        fs.writeFileSync(path.join(__dirname, 'json/accounts.json'),accountsJSON,{encoding:'utf8'})
+
+ 
   res.render('transfer',{message: "Transfer Completed"});
 })
 
