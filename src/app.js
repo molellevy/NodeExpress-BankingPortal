@@ -40,6 +40,23 @@ app.get('/profile', (req,res)=>{
 app.get('/transfer', (req, res) => {
     res.render('transfer');
 })
+app.get('/payment', (req, res) => {
+    res.render('payment',{account: accounts.credit});
+})
+
+app.post('/payment', (req, res) => {
+    
+    accounts.credit.balance = parseInt(accounts.credit.balance - req.body.amount)
+    accounts.credit.available = parseInt(accounts.credit.available + req.body.amount)
+   
+    const accountsJSON = JSON.stringify(accounts)
+ 
+    fs.writeFileSync(path.join(__dirname, 'json/accounts.json'),accountsJSON,{encoding:'utf8',flag:'w'})
+
+
+res.render('payment',{ message: "Payment Successful", account: accounts.credit });
+})
+
 
 app.post('/transfer', (req, res) => {
    
@@ -50,7 +67,7 @@ app.post('/transfer', (req, res) => {
        
         const accountsJSON = JSON.stringify(accounts)
         fs.copyFileSync(path.join(__dirname, 'json/accounts.json'), 'account_backup.json');
-        fs.writeFileSync(path.join(__dirname, 'json/accounts.json'),accountsJSON,{encoding:'utf8'})
+        fs.writeFileSync(path.join(__dirname, 'json/accounts.json'),accountsJSON,{encoding:'utf8',flag:'w'})
 
  
   res.render('transfer',{message: "Transfer Completed"});
