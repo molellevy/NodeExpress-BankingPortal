@@ -37,28 +37,17 @@ app.get('/profile', (req,res)=>{
     res.render('profile',{user: users[0]})
 })
 
-app.get('/transfer', (req, res) => {
-    res.render('transfer');
-})
-
+app.get('/transfer', (req, res) =>  res.render('transfer'));
 
 app.post('/transfer', (req, res) => {
-   
+    accounts[req.body.from].balance -= req.body.amount;
+    accounts[req.body.to].balance += parseInt(req.body.amount, 10);
+    let accountsJSON = JSON.stringify(accounts, null, 4)
+    fs.writeFileSync(path.join(__dirname, 'json','accounts.json'), accountsJSON, 'utf8');
+    res.render('transfer', {message: 'Transfer Completed'});
+});
 
-    
-        accounts[req.body.to].balance = parseInt(accounts[req.body.to].balance + req.body.amount)
-        accounts[req.body.from].balance = parseInt(accounts[req.body.from].balance - req.body.amount)
-       
-        const accountsJSON = JSON.stringify(accounts)
-        fs.copyFileSync(path.join(__dirname, 'json','accounts.json'), 'account_backup.json');
-        fs.writeFileSync(path.join(__dirname, 'json','accounts.json'), accountsJSON, 'utf8');
- 
-  res.render('transfer',{message: "Transfer Completed"});
-})
-
-app.get('/payment', (req, res) => {
-    res.render('payment',{account: accounts.credit});
-})
+app.get('/payment', (req, res) => res.render('payment', {account: accounts.credit}));
 app.post('/payment', (req, res) => {
     accounts.credit.balance -= req.body.amount;
     accounts.credit.available += parseInt(req.body.amount);
@@ -66,6 +55,8 @@ app.post('/payment', (req, res) => {
     fs.writeFileSync(path.join(__dirname, 'json','accounts.json'), accountsJSON, 'utf8');
     res.render('payment', {message: 'Payment Successful', account: accounts.credit});
 });
+
+
 
 
 app.listen(3000, () => {
